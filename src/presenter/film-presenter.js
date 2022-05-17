@@ -30,13 +30,13 @@ export default class FilmPresenter {
   constructor (filmsContainer, filmCardsModel) {
     this.#filmsContainer = filmsContainer;
     this.#filmCardsModel = filmCardsModel;
-  };
+  }
 
   init = () => {
     this.#films = [...this.#filmCardsModel.films];
     this.#comments = [...this.#filmCardsModel.comments];
     this.#renderFilmList();
-  }
+  };
 
   #renderFilmList = () => {
 

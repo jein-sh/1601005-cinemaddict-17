@@ -2,7 +2,7 @@ import { generateComment } from '../mock/comment.js';
 import {generateFilm} from '../mock/film-card.js';
 
 export default class FilmCardsModel {
-  #films = Array.from({length: 0}, generateFilm);
+  #films = Array.from({length: 13}, generateFilm);
   #comments =Array.from({length: 100}, generateComment);
 
   get films() {
