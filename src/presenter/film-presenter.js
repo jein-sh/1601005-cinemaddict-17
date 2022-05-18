@@ -1,3 +1,4 @@
+import {render} from '../framework/render.js';
 import SortView from '../view/sort-view.js';
 import FilmsView from '../view/films-view.js';
 import FilmListView from '../view/film-list-view.js';
@@ -6,8 +7,6 @@ import FilmListContainerView from '../view/film-list-container-view.js';
 import ShowMoreButtonView from '../view/show-more-button-view.js';
 import FilmCardView from '../view/film-card-view';
 import PopupView from '../view/popup-view.js';
-
-import {render} from '../render.js';
 
 const bodyElement = document.querySelector('body');
 const siteMainElement = document.querySelector('.main');
@@ -55,7 +54,7 @@ export default class FilmPresenter {
       if (this.#films.length > FILM_COUNT_PER_STEP) {
         render(this.#showMoreButtonComponent, this.#filmListComponent.element);
 
-        this.#showMoreButtonComponent.element.addEventListener('click', this.#onShowMoreButtonClick);
+        this.#showMoreButtonComponent.setClickHandler(this.#onShowMoreButtonClick);
       }
     }
   };
@@ -82,13 +81,13 @@ export default class FilmPresenter {
       }
     };
 
-    filmComponent.element.querySelector('.film-card__link').addEventListener('click', () => {
+    filmComponent.setFilmCardClickHadler(() => {
       showPopup();
       bodyElement.classList.add('hide-overflow');
       document.addEventListener('keydown', onEscKeyDown);
     });
 
-    popupComponent.element.querySelector('.film-details__close-btn').addEventListener('click', () => {
+    popupComponent.setCloseButtonClickHandler(() => {
       closePopup();
     });
 

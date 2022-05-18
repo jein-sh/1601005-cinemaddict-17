@@ -1,4 +1,4 @@
-import {createElement} from '../render.js';
+import AbstractView from '../framework/view/abstract-view.js';
 import { humanizeDate, humanizeCommentDate, timeInHours, getRandomArray } from '../untils.js';
 
 const createPopupTemplate = (film, allComments) => {
@@ -197,12 +197,12 @@ const createPopupTemplate = (film, allComments) => {
   );
 };
 
-export default class PopupdView {
-  #element = null;
+export default class PopupdView extends AbstractView {
   #film = null;
   #comments = null;
 
   constructor(film, comments) {
+    super();
     this.#film = film;
     this.#comments = comments;
   }
@@ -211,15 +211,14 @@ export default class PopupdView {
     return createPopupTemplate(this.#film, this.#comments);
   }
 
-  get element() {
-    if (!this.#element) {
-      this.#element = createElement(this.template);
-    }
+  setCloseButtonClickHandler = (callback) => {
+    this._callback.editClick = callback;
+    this.element.querySelector('.film-details__close-btn').addEventListener('click', this.#closeButtonClickHandler);
+  };
 
-    return this.#element;
-  }
+  #closeButtonClickHandler = (evt) => {
+    evt.preventDefault();
+    this._callback.editClick();
+  };
 
-  removeElement() {
-    this.#element = null;
-  }
 }
