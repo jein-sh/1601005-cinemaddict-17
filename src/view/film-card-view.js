@@ -1,4 +1,4 @@
-import {createElement} from '../render.js';
+import AbstractView from '../framework/view/abstract-view.js';
 import {yearDate, timeInHours} from '../untils.js';
 
 const createFilmCardTemplate = (film) => {
@@ -39,11 +39,12 @@ const createFilmCardTemplate = (film) => {
   );
 };
 
-export default class FilmCardView {
-  #element = null;
+export default class FilmCardView extends AbstractView{
+
   #film =null;
 
   constructor(film) {
+    super();
     this.#film = film;
   }
 
@@ -51,15 +52,14 @@ export default class FilmCardView {
     return createFilmCardTemplate(this.#film);
   }
 
-  get element() {
-    if (!this.#element) {
-      this.#element = createElement(this.template);
-    }
+  setFilmCardClickHandler = (callback) => {
+    this._callback.сlick = callback;
+    this.element.querySelector('.film-card__link').addEventListener('click', this.#filmCardClickHandler);
+  };
 
-    return this.#element;
-  }
-
-  removeElement() {
-    this.#element = null;
-  }
+  #filmCardClickHandler = (evt) => {
+    evt.preventDefault();
+    this._callback.сlick();
+  };
 }
+
