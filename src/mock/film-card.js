@@ -1,4 +1,5 @@
 import { getRandomInteger, getRandomArray } from '../untils';
+import {nanoid} from 'nanoid';
 
 const generateTitle = () => {
   const titles = [
@@ -62,7 +63,7 @@ const generateDescription = () => {
 };
 
 const generateFilm = () => ({
-  id: '0',
+  id: nanoid(),
   filmInfo: {
     title: generateTitle(),
     alternativeTitle: generateTitle(),
