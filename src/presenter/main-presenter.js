@@ -6,6 +6,8 @@ import EmptyFilmListView from '../view/empty-film-list-view.js';
 import FilmListContainerView from '../view/film-list-container-view.js';
 import ShowMoreButtonView from '../view/show-more-button-view.js';
 import FilmPresenter from './film-presenter.js';
+import {sortFilmDate, sortFilmRating} from '../untils.js';
+import {SortType} from '../const.js';
 import { updateItem } from '../untils.js';
 
 const FILM_COUNT_PER_STEP = 5;
@@ -16,9 +18,12 @@ export default class MainPresenter {
   #filmCardsModel = null;
   #films = [];
   #filmPresenter = new Map();
+  #currentSortType = SortType.DEFAULT;
+  #sourcedFilms = [];
   #renderedFilmCount = FILM_COUNT_PER_STEP;
 
   #emptyFilmListComponent = new EmptyFilmListView();
+  #sortComponent = new SortView();
   #filmsWrapperComponent = new FilmsWrapperView();
   #filmListComponent = new FilmListView();
   #filmListContainerComponent = new FilmListContainerView();
@@ -31,6 +36,7 @@ export default class MainPresenter {
 
   init = () => {
     this.#films = [...this.#filmCardsModel.films];
+    this.#sourcedFilms = [...this.#filmCardsModel.films];
     this.#renderFilmsContent();
   };
 
@@ -38,8 +44,34 @@ export default class MainPresenter {
     render(this.#emptyFilmListComponent, siteMainElement);
   };
 
+  #sortFilms = (sortType) => {
+    switch (sortType) {
+      case SortType.DATE:
+        this.#films.sort(sortFilmDate);
+        break;
+      case SortType.RATING:
+        this.#films.sort(sortFilmRating);
+        break;
+      default:
+        this.#films = [...this.#sourcedFilms];
+    }
+
+    this.#currentSortType = sortType;
+  };
+
+  #handleSortTypeChange = (sortType) => {
+    if (this.#currentSortType === sortType) {
+      return;
+    }
+
+    this.#sortFilms(sortType);
+    this.#clearFilmList();
+    this.#renderFilmsContent();
+  };
+
   #renderSort = () => {
-    render(new SortView(), this.#filmsWrapperComponent.element, RenderPosition.AFTERBEGIN);
+    render(this.#sortComponent, this.#filmsWrapperComponent.element, RenderPosition.AFTERBEGIN);
+    this.#sortComponent.setSortTypeChangeHandler(this.#handleSortTypeChange);
   };
 
   #renderFilmsWrapper = () => {
@@ -99,6 +131,7 @@ export default class MainPresenter {
 
   #handleFilmChange = (updatedFilm) => {
     this.#films = updateItem(this.#films, updatedFilm);
+    this.#sourcedFilms = updateItem(this.#sourcedFilms, updatedFilm);
     this.#filmPresenter.get(updatedFilm.id).init(updatedFilm);
   };
 

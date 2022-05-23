@@ -1,4 +1,4 @@
-import { getRandomInteger, getRandomArray } from '../untils';
+import { getRandomInteger, getRandomPositiveFloat, getRandomArray } from '../untils';
 import {nanoid} from 'nanoid';
 
 const generateTitle = () => {
@@ -67,7 +67,7 @@ const generateFilm = () => ({
   filmInfo: {
     title: generateTitle(),
     alternativeTitle: generateTitle(),
-    totalRating: 5.3,
+    totalRating: getRandomPositiveFloat(0, 10, 1),
     poster: generatePoster(),
     ageRating: 0,
     director: 'Tom Ford',
@@ -78,7 +78,7 @@ const generateFilm = () => ({
       'Erich von Stroheim, Mary Beth Hughes, Dan Duryea',
     ],
     release: {
-      date: '2019-05-11T00:00:00.000Z',
+      date: getRandomInteger(0, Date.now()),
       releaseCountry: 'Finland',
     },
     runtime: 77,
