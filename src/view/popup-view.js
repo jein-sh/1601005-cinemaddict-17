@@ -39,7 +39,7 @@ const createPopupTemplate = (film, allComments) => {
 
   const activeClassName = (control) => control
     ? ''
-    : 'film-card__controls-item--active';
+    : 'film-details__control-button--active';
 
   const genresTemplate = () => {
 
@@ -138,14 +138,9 @@ const createPopupTemplate = (film, allComments) => {
           </div>
 
           <section class="film-details__controls">
-            <button
-              class="film-card__controls-item film-card__controls-item--add-to-watchlist ${activeClassName(watchlist)}"
-              type="button">Add to watchlist</button>
-            <button
-              class="film-card__controls-item film-card__controls-item--mark-as-watched ${activeClassName(alreadyWatched)}"
-              type="button">Mark as watched</button>
-           <button class="film-card__controls-item film-card__controls-item--favorite ${activeClassName(favorite)}"
-              type="button">Mark as favorite</button>
+            <button type="button" class="film-details__control-button film-details__control-button--watchlist ${activeClassName(watchlist)}" id="watchlist" name="watchlist">Add to watchlist</button>
+            <button type="button" class="film-details__control-button film-details__control-button--watched ${activeClassName(alreadyWatched)}" id="watched" name="watched">Already watched</button>
+            <button type="button" class="film-details__control-button film-details__control-button--favorite ${activeClassName(favorite)}" id="favorite" name="favorite">Add to favorites</button>
           </section>
         </div>
 
@@ -223,17 +218,17 @@ export default class PopupdView extends AbstractView {
 
   setAddToWatchlistClickHandler = (callback) => {
     this._callback.addToWatchlistClick = callback;
-    this.element.querySelector('.film-card__controls-item--add-to-watchlist').addEventListener('click', this.#addToWatchlistClickHandler);
+    this.element.querySelector('.film-details__control-button--watchlist').addEventListener('click', this.#addToWatchlistClickHandler);
   };
 
   setMarkAsWatchedClickHandler = (callback) => {
     this._callback.markAsWatchedClick = callback;
-    this.element.querySelector('.film-card__controls-item--mark-as-watched').addEventListener('click', this.#markAsWatchedClickHandler);
+    this.element.querySelector('.film-details__control-button--watched').addEventListener('click', this.#markAsWatchedClickHandler);
   };
 
   setFavoriteClickHandler = (callback) => {
     this._callback.favoriteClick = callback;
-    this.element.querySelector('.film-card__controls-item--favorite').addEventListener('click', this.#favoriteClickHandler);
+    this.element.querySelector('.film-details__control-button--favorite').addEventListener('click', this.#favoriteClickHandler);
   };
 
   #addToWatchlistClickHandler = (evt) => {
