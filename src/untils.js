@@ -9,6 +9,15 @@ const getRandomInteger = (a = 0, b = 1) => {
   return Math.floor(lower + Math.random() * (upper - lower + 1));
 };
 
+function getRandomPositiveFloat (a, b, digits = 1) {
+  const lower = Math.min(Math.abs(a), Math.abs(b));
+  const upper = Math.max(Math.abs(a), Math.abs(b));
+
+  const result = Math.random() * (upper - lower) + lower;
+
+  return result.toFixed(digits);
+}
+
 const getRandomArray = (elements, maxLength = elements.length) => {
   const lengthArray = getRandomInteger(1, maxLength);
   const array = [];
@@ -55,4 +64,19 @@ const updateItem = (items, update) => {
   ];
 };
 
-export {getRandomArray, getRandomInteger, humanizeDate, humanizeCommentDate, yearDate, timeInHours, updateItem};
+const sortFilmDate = (filmA, filmB) => {
+
+  const {filmInfo: {release: {date: dateFilmA}}} = filmA;
+  const {filmInfo: {release: {date: dateFilmB}}} = filmB;
+
+  return dayjs(dateFilmB).diff(dayjs(dateFilmA));
+};
+
+const sortFilmRating = (filmA, filmB) => {
+  const {filmInfo: {totalRating: ratingFilmA}} = filmA;
+  const {filmInfo: {totalRating: ratingFilmB}} = filmB;
+
+  return ratingFilmB - ratingFilmA;
+};
+
+export {getRandomArray, getRandomInteger, getRandomPositiveFloat, humanizeDate, humanizeCommentDate, yearDate, timeInHours, updateItem, sortFilmDate, sortFilmRating};
