@@ -1,6 +1,11 @@
 import {render, replace, remove} from '../framework/render.js';
 import FilmCardView from '../view/film-card-view';
-import PopupView from '../view/popup-view.js';
+import PopupDetailsView from '../view/popup-details-view.js';
+import PopupCommentsView from '../view/popup-comments-view.js';
+import PopupWrapperView from '../view/popup-wrapper-view.js';
+import PopupFormView from '../view/popup-form-view.js';
+import PopupNewCommentView from '../view/popup-new-comment-view.js';
+import PopupCommentsContainerView from '../view/popup-comments-container-view.js';
 
 const bodyElement = document.querySelector('body');
 
@@ -10,7 +15,13 @@ export default class FilmPresenter {
   #filmCardsModel = null;
 
   #filmComponent = null;
-  #popupComponent = null;
+  #popupDetailsComponent = null;
+  #popupCommentsComponent = null;
+
+  #popupWrapperComponent = new PopupWrapperView();
+  #popupFormComponent = new PopupFormView();
+  #popupCommentsContainerComponent = new PopupCommentsContainerView();
+  #popupNewCommentComponent = new PopupNewCommentView();
 
   #film = null;
   #comments = [];
@@ -27,19 +38,21 @@ export default class FilmPresenter {
     this.#comments = [...this.#filmCardsModel.comments];
 
     const prevFilmComponent = this.#filmComponent;
-    const prevPopupComponent = this.#popupComponent;
+    const prevPopupDetailsComponent = this.#popupDetailsComponent;
+    const prevPopupCommentsComponent = this.#popupCommentsComponent;
 
     this.#filmComponent = new FilmCardView(this.#film);
-    this.#popupComponent = new PopupView(this.#film, this.#comments);
+    this.#popupDetailsComponent = new PopupDetailsView(this.#film);
+    this.#popupCommentsComponent = new PopupCommentsView(this.#comments);
 
     this.#filmComponent.setFilmCardClickHandler(this.#handleFilmCardClick);
-    this.#popupComponent.setCloseButtonClickHandler(this.#handleCloseButtonClick);
     this.#filmComponent.setAddToWatchlistClickHandler(this.#handleAddToWatchlistClick);
     this.#filmComponent.setMarkAsWatchedClickHandler(this.#handleMarkAsWatchedClick);
     this.#filmComponent.setFavoriteClickHandler(this.#handleFavoriteClick);
-    this.#popupComponent.setAddToWatchlistClickHandler(this.#handleAddToWatchlistClick);
-    this.#popupComponent.setMarkAsWatchedClickHandler(this.#handleMarkAsWatchedClick);
-    this.#popupComponent.setFavoriteClickHandler(this.#handleFavoriteClick);
+    this.#popupDetailsComponent.setCloseButtonClickHandler(this.#handleCloseButtonClick);
+    this.#popupDetailsComponent.setAddToWatchlistClickHandler(this.#handleAddToWatchlistClick);
+    this.#popupDetailsComponent.setMarkAsWatchedClickHandler(this.#handleMarkAsWatchedClick);
+    this.#popupDetailsComponent.setFavoriteClickHandler(this.#handleFavoriteClick);
 
     if (prevFilmComponent === null) {
       render(this.#filmComponent, this.#filmListContainer);
@@ -50,9 +63,14 @@ export default class FilmPresenter {
       replace(this.#filmComponent, prevFilmComponent);
     }
 
-    if (prevPopupComponent.element) {
-      replace(this.#popupComponent, prevPopupComponent);
-      remove(prevPopupComponent);
+    if (prevPopupDetailsComponent.element) {
+      replace(this.#popupDetailsComponent, prevPopupDetailsComponent);
+      remove(prevPopupDetailsComponent);
+    }
+
+    if (prevPopupCommentsComponent.element) {
+      replace(this.#popupCommentsComponent, prevPopupCommentsComponent);
+      remove(prevPopupCommentsComponent);
     }
 
     remove(prevFilmComponent);
@@ -61,12 +79,46 @@ export default class FilmPresenter {
 
   destroy = () => {
     remove(this.#filmComponent);
-    remove(this.#popupComponent);
+    remove(this.#popupDetailsComponent);
+    remove(this.#popupCommentsComponent);
+  };
+
+  #renderPopupWrapper = () => {
+    render(this.#popupWrapperComponent, bodyElement);
+  };
+
+  #renderPopupForm = () => {
+    render(this.#popupFormComponent, this.#popupWrapperComponent.element);
+  };
+
+  #renderPopupDetails = () => {
+    render(this.#popupDetailsComponent, this.#popupFormComponent.element);
+  };
+
+  #renderPopupCommentsContainer = () => {
+    render(this.#popupCommentsContainerComponent, this.#popupFormComponent.element);
+  };
+
+  #renderPopupComments = () => {
+    render(this.#popupCommentsComponent, this.#popupCommentsContainerComponent.element);
+  };
+
+  #renderPopupNewComment = () => {
+    render(this.#popupNewCommentComponent, this.#popupCommentsComponent.element);
+  };
+
+  #renderPopup = () => {
+    this.#renderPopupWrapper();
+    this.#renderPopupForm();
+    this.#renderPopupDetails();
+    this.#renderPopupCommentsContainer();
+    this.#renderPopupComments();
+    this.#renderPopupNewComment();
   };
 
   #showPopup = () => {
     bodyElement.classList.add('hide-overflow');
-    bodyElement.appendChild(this.#popupComponent.element);
+    this.#renderPopup();
   };
 
   #closePopup = () => {
