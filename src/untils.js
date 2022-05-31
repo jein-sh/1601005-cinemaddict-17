@@ -1,6 +1,9 @@
 import dayjs from 'dayjs';
-// import relativeTime from 'dayjs/plugin/relativeTime';
-// dayjs.extend(relativeTime);
+import duration from 'dayjs/plugin/duration';
+import relativeTime from 'dayjs/plugin/relativeTime';
+
+dayjs.extend(duration);
+dayjs.extend(relativeTime);
 
 const getRandomInteger = (a = 0, b = 1) => {
   const lower = Math.ceil(Math.min(a, b));
@@ -36,19 +39,9 @@ const humanizeDate = (date) => dayjs(date).format('D MMMM YYYY');
 
 const yearDate = (date) => dayjs(date).format('YYYY');
 
-const humanizeCommentDate = (date) => dayjs(date).format('YYYY/MM/DD HH:mm');
+const humanizeCommentDate = (date) => dayjs().to(date);
 
-//   const dateCommentToNow =
-//   ....
-//   ? dayjs(date).format('YYYY/MM/DD HH:mm')
-//   : dayjs().to(dayjs(date))
-
-
-const timeInHours = (timeInMinutes) => {
-  const hours = Math.trunc(timeInMinutes/60);
-  const minutes = timeInMinutes % 60;
-  return `${hours}h ${minutes}m`;
-};
+const timeInHours = (time) => dayjs.duration(time, 'm').format('H[h] mm[m]');
 
 const updateItem = (items, update) => {
   const index = items.findIndex((item) => item.id === update.id);

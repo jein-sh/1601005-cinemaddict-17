@@ -81,7 +81,7 @@ const generateFilm = () => ({
       date: getRandomInteger(0, Date.now()),
       releaseCountry: 'Finland',
     },
-    runtime: 77,
+    runtime: getRandomInteger( 60, 180),
     genres: generateGenres(),
     description: generateDescription(),
   },
