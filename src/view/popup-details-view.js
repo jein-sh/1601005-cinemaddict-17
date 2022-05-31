@@ -129,13 +129,13 @@ export default class PopupDetailsdView extends AbstractView {
   }
 
   setCloseButtonClickHandler = (callback) => {
-    this._callback.editClick = callback;
+    this._callback.closeButtonClick = callback;
     this.element.querySelector('.film-details__close-btn').addEventListener('click', this.#closeButtonClickHandler);
   };
 
   #closeButtonClickHandler = (evt) => {
     evt.preventDefault();
-    this._callback.editClick();
+    this._callback.closeButtonClick();
   };
 
   setAddToWatchlistClickHandler = (callback) => {

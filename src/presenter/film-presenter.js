@@ -70,12 +70,12 @@ export default class FilmPresenter {
 
     if (prevPopupCommentsComponent.element) {
       replace(this.#popupCommentsComponent, prevPopupCommentsComponent);
+      this.#renderPopupNewComment();
       remove(prevPopupCommentsComponent);
     }
 
     remove(prevFilmComponent);
   };
-
 
   destroy = () => {
     remove(this.#filmComponent);
@@ -126,6 +126,7 @@ export default class FilmPresenter {
     if(popup) {
       popup.remove();
       bodyElement.classList.remove('hide-overflow');
+      this.#popupNewCommentComponent.reset();
     }
   };
 

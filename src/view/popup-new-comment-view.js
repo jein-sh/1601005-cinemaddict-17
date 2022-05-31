@@ -21,7 +21,7 @@ const createEmotionsListTemplate = (currentEmotion) => EMOTIONS.map((emotion) =>
   name="comment-emoji"
   value="${emotion}"
   ${currentEmotion === emotion ? 'checked' : ''}/>
-  <label for="emotion-${emotion}"
+  <label for="emoji-${emotion}"
   class="film-details__emoji-label"><img src="./images/emoji/${emotion}.png" width="30" height="30" alt="emoji"></label>`
 ).join('');
 
@@ -69,9 +69,9 @@ export default class PopupNewCommentView extends AbstractStatefulView {
     this.setEnterShiftKeysDownHandler(this._callback.enterShiftKeysDown);
   };
 
-  reset = (comment) => {
+  reset = () => {
     this.updateElement(
-      PopupNewCommentView.parseCommentToState(comment),
+      PopupNewCommentView.parseCommentToState(BLANK_COMMENT),
     );
   };
 
@@ -101,6 +101,9 @@ export default class PopupNewCommentView extends AbstractStatefulView {
   #setInnerHandlers = () => {
     this.element.querySelector('.film-details__comment-input')
       .addEventListener('input', this.#textInputHandler);
+
+    this.element.querySelector('.film-details__comment-input')
+      .addEventListener('keydown', this.#enterShiftKeysDownHandler);
 
 
     this.element.querySelector('.film-details__emoji-list')
