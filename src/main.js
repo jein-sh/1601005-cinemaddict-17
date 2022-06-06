@@ -1,19 +1,24 @@
 import ProfileView from './view/profile.view';
-import FilterView from './view/filter-view';
 import FilmStatisticsView from './view/film-statistics-view';
-import MainPresenter from './presenter/main-presenter.js';
-import FilmCardsModel from './model/films-model.js';
+import FilmsPresenter from './presenter/films-presenter.js';
+import FilterPresenter from './presenter/filter-presenter';
+import FilmsModel from './model/films-model.js';
+import CommentsModel from './model/comments-model.js';
+import FilterModel from './model/filter-model.js';
 import {render} from './render.js';
 
 const siteHeaderElement = document.querySelector('.header');
 const siteMainElement = document.querySelector('.main');
 const siteFooterElement = document.querySelector('.footer');
 
-const filmsModel = new FilmCardsModel();
-const mainPresenter = new MainPresenter(siteMainElement, filmsModel);
+const filterModel = new FilterModel();
+const filmsModel = new FilmsModel();
+const commentsModel = new CommentsModel();
 
+const filterPresenter = new FilterPresenter(siteMainElement, filterModel, filmsModel);
+const filmsPresenter = new FilmsPresenter(siteMainElement, filmsModel, commentsModel, filterModel);
 
 render(new ProfileView(), siteHeaderElement);
-render(new FilterView(), siteMainElement);
-mainPresenter.init();
+filterPresenter.init();
+filmsPresenter.init();
 render(new FilmStatisticsView(), siteFooterElement);

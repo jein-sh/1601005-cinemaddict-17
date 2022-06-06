@@ -35,8 +35,8 @@ const createPopupDetailsTemplate = (film) => {
   const time = timeInHours(runtime);
 
   const activeClassName = (control) => control
-    ? ''
-    : 'film-details__control-button--active';
+    ? 'film-details__control-button--active'
+    : '';
 
   const genresTemplate = () => {
 
