@@ -49,13 +49,11 @@ export default class PopupPresenter {
 
     if (prevPopupDetailsComponent === null) {
       this.#renderPopupDetails();
-      this.#commentsPresenter.init();
       return;
     }
 
     if (prevPopupDetailsComponent.element) {
       replace(this.#popupDetailsComponent, prevPopupDetailsComponent);
-      this.#commentsPresenter.init();
     }
 
     remove(prevPopupDetailsComponent);
@@ -73,6 +71,7 @@ export default class PopupPresenter {
 
   #renderPopupDetails = () => {
     render(this.#popupDetailsComponent, this.#popupFormComponent.element);
+    this.#commentsPresenter.init();
   };
 
   #closePopup = () => {
@@ -98,7 +97,7 @@ export default class PopupPresenter {
   #handleAddToWatchlistClick = () => {
     this.#changeData(
       UserAction.UPDATE_FILM,
-      UpdateType.MINOR,
+      UpdateType.PATCH,
       {...this.#film, userDetails: {...this.#film.userDetails, watchlist: !this.#film.userDetails.watchlist}}
     );
   };
@@ -106,7 +105,7 @@ export default class PopupPresenter {
   #handleMarkAsWatchedClick = () => {
     this.#changeData(
       UserAction.UPDATE_FILM,
-      UpdateType.MINOR,
+      UpdateType.PATCH,
       {...this.#film, userDetails: {...this.#film.userDetails, alreadyWatched: !this.#film.userDetails.alreadyWatched}}
     );
   };
@@ -114,7 +113,7 @@ export default class PopupPresenter {
   #handleFavoriteClick = () => {
     this.#changeData(
       UserAction.UPDATE_FILM,
-      UpdateType.MINOR,
+      UpdateType.PATCH,
       {...this.#film, userDetails: {...this.#film.userDetails, favorite: !this.#film.userDetails.favorite}}
     );
   };

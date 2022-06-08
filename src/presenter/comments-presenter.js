@@ -1,11 +1,12 @@
 import {render} from '../framework/render.js';
 import PopupCommentsContainerView from '../view/popup-comments-container-view.js';
 import PopupCommentsView from '../view/popup-comments-view.js';
+import PopupCommentsTitleView from '../view/popup-comments-title-view.js';
 import PopupCommentsListView from '../view/popup-comments-list-view.js';
 import CommentPresenter from '../presenter/comment-presenter.js';
 import NewCommentPresenter from './new-comment-presenter.js';
 
-import {UserAction} from '../const.js';
+import {UserAction, UpdateType} from '../const.js';
 
 export default class CommentsPresenter {
   #container = null;
@@ -13,8 +14,9 @@ export default class CommentsPresenter {
 
   #commentPresenter = new Map();
   #newCommentPresenter = null;
+  #popupCommentsTitleComponent = null;
 
-  #popupCommentsComponent = null;
+  #popupCommentsComponent = new PopupCommentsView();
   #popupCommentsContainerComponent = new PopupCommentsContainerView();
   #popupCommentsListComponent = new PopupCommentsListView();
 
@@ -37,13 +39,17 @@ export default class CommentsPresenter {
     render(this.#popupCommentsContainerComponent, this.#container);
   };
 
-  #renderPopupComments = (comments) => {
-    this.#popupCommentsComponent = new PopupCommentsView(comments);
+  #renderPopupComments = () => {
     render(this.#popupCommentsComponent, this.#popupCommentsContainerComponent.element);
   };
 
   #renderPopupCommentsList = () => {
     render(this.#popupCommentsListComponent, this.#popupCommentsComponent.element);
+  };
+
+  #renderPopupCommentsTitle = () => {
+    this.#popupCommentsTitleComponent = new PopupCommentsTitleView(this.comments);
+    render(this.#popupCommentsTitleComponent, this.#popupCommentsComponent.element);
   };
 
   #renderComment = (comment) => {
@@ -52,8 +58,8 @@ export default class CommentsPresenter {
     this.#commentPresenter.set(comment.id, commentPresenter);
   };
 
-  #renderComments = (comments) => {
-    comments.forEach((comment) => this.#renderComment(comment));
+  #renderComments = () => {
+    this.comments.forEach((comment) => this.#renderComment(comment));
   };
 
   #clearComments = () => {
@@ -68,19 +74,20 @@ export default class CommentsPresenter {
 
   #renderPopupCommentsContent = () => {
     this.#renderPopupCommentsContainer();
-    this.#renderPopupComments(this.comments);
+    this.#renderPopupComments();
+    this.#renderPopupCommentsTitle();
     this.#renderPopupCommentsList();
-    this.#renderComments(this.comments);
+    this.#renderComments();
     this.#renderPopupNewComment();
   };
 
   #handleViewAction = (actionType, update) => {
     switch (actionType) {
       case UserAction.ADD_COMMENT:
-        this.#commentsModel.addComment(update);
+        this.#commentsModel.addComment(UpdateType.MAJOR, update);
         break;
       case UserAction.DELETE_COMMENT:
-        this.#commentsModel.deleteComment(update);
+        this.#commentsModel.deleteComment(UpdateType.MAJOR, update);
         break;
     }
   };

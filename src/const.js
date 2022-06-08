@@ -19,6 +19,7 @@ const UserAction = {
 const UpdateType = {
   PATCH: 'PATCH',
   MINOR: 'MINOR',
+  MINOR_POPUP: 'MINOR_POPUP',
   MAJOR: 'MAJOR',
 };
 

@@ -81,7 +81,7 @@ export default class PopupNewCommentView extends AbstractStatefulView {
     if (evt.ctrlKey && evt.key === 'Enter') {
       evt.preventDefault();
       this._callback.ctrlEnterKeysDown(PopupNewCommentView.parseStateToComment(this._state));
-
+      this.reset();
       document.removeEventListener('keydown', this.#ctrlEnterKeysDownHandler);
     }
   };

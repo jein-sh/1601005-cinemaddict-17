@@ -10,11 +10,13 @@ export default class FilmPresenter {
   #filmComponent = null;
   #film = null;
   #changeData = null;
+  #filmsModel = null;
   #commentsModel = null;
   #popupPresenter = null;
 
-  constructor(filmListContainer, commentsModel, changeData) {
+  constructor(filmListContainer, filmsModel, commentsModel, changeData) {
     this.#filmListContainer = filmListContainer;
+    this.#filmsModel = filmsModel;
     this.#commentsModel = commentsModel;
     this.#changeData = changeData;
   }
@@ -25,7 +27,6 @@ export default class FilmPresenter {
     const prevFilmComponent = this.#filmComponent;
 
     this.#filmComponent = new FilmCardView(this.#film);
-    this.#popupPresenter = new PopupPresenter(bodyElement, this.#commentsModel, this.#changeData);
 
     this.#filmComponent.setFilmCardClickHandler(this.#handleFilmCardClick);
     this.#filmComponent.setAddToWatchlistClickHandler(this.#handleAddToWatchlistClick);
@@ -49,7 +50,21 @@ export default class FilmPresenter {
   };
 
   #renderPopup = () => {
+    this.#popupPresenter = new PopupPresenter(bodyElement, this.#commentsModel, this.#handleViewAction);
     this.#popupPresenter.init(this.#film);
+  };
+
+  #rerenderPopup = () => {
+    if(this.#popupPresenter) {
+      this.#popupPresenter.init(this.#film);
+    }
+  };
+
+  #handleViewAction = (actionType, updateType, update) => {
+    if (actionType === UserAction.UPDATE_FILM) {
+      this.#filmsModel.updateFilm(updateType, update);
+    }
+    this.#popupPresenter.init(update);
   };
 
   #handleFilmCardClick = () => {
@@ -59,24 +74,30 @@ export default class FilmPresenter {
   #handleAddToWatchlistClick = () => {
     this.#changeData(
       UserAction.UPDATE_FILM,
-      UpdateType.MINOR,
+      UpdateType.PATCH,
       {...this.#film, userDetails: {...this.#film.userDetails, watchlist: !this.#film.userDetails.watchlist}}
     );
+
+    this.#rerenderPopup();
   };
 
   #handleMarkAsWatchedClick = () => {
     this.#changeData(
       UserAction.UPDATE_FILM,
-      UpdateType.MINOR,
+      UpdateType.PATCH,
       {...this.#film, userDetails: {...this.#film.userDetails, alreadyWatched: !this.#film.userDetails.alreadyWatched}}
     );
+
+    this.#rerenderPopup();
   };
 
   #handleFavoriteClick = () => {
     this.#changeData(
       UserAction.UPDATE_FILM,
-      UpdateType.MINOR,
+      UpdateType.PATCH,
       {...this.#film, userDetails: {...this.#film.userDetails, favorite: !this.#film.userDetails.favorite}}
     );
+
+    this.#rerenderPopup();
   };
 }

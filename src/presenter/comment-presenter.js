@@ -39,7 +39,6 @@ export default class CommentPresenter {
   };
 
   #handleDeleteClick = (comment) => {
-
     this.#changeData(
       UserAction.DELETE_COMMENT,
       comment,

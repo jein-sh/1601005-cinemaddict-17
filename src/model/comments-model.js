@@ -10,8 +10,8 @@ export default class CommentsModel  extends Observable {
 
   addComment = (updateType, update) => {
     this.#comments = [
-      update,
       ...this.#comments,
+      update
     ];
 
     this._notify(updateType, update);

@@ -41,6 +41,6 @@ export default class PopupCommentView extends AbstractView {
 
   #deleteClickHandler = (evt) => {
     evt.preventDefault();
-    this._callback.deleteClick();
+    this._callback.deleteClick(this.#comment);
   };
 }
