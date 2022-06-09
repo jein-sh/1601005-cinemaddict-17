@@ -12,8 +12,8 @@ const createFilmCardTemplate = (film) => {
 
 
   const activeClassName = (control) => control
-    ? ''
-    : 'film-card__controls-item--active';
+    ? 'film-card__controls-item--active'
+    : '';
 
 
   return (

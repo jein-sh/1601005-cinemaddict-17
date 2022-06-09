@@ -1,4 +1,5 @@
 import AbstractStatefulView from '../framework/view/abstract-stateful-view.js';
+import he from 'he';
 
 import { EMOTIONS } from '../const.js';
 
@@ -37,7 +38,7 @@ const createPopupNewCommentTemplate = (data) => {
       ${emotionCommentTemplate}
 
       <label class="film-details__comment-label">
-        <textarea class="film-details__comment-input" placeholder="Select reaction below and write comment here" name="comment">${text}</textarea>
+        <textarea class="film-details__comment-input" placeholder="Select reaction below and write comment here" name="comment">${he.encode(text)}</textarea>
       </label>
 
       <div class="film-details__emoji-list">
@@ -59,14 +60,14 @@ export default class PopupNewCommentView extends AbstractStatefulView {
     return createPopupNewCommentTemplate(this._state);
   }
 
-  setEnterShiftKeysDownHandler = (callback) => {
-    this._callback.enterShiftKeysDown = callback;
-    this.element.addEventListener('keydown', this.#enterShiftKeysDownHandler);
+  setCtrlEnterKeysDownHandler = (callback) => {
+    this._callback.ctrlEnterKeysDown = callback;
+    document.addEventListener('keydown', this.#ctrlEnterKeysDownHandler);
   };
 
   _restoreHandlers = () => {
     this.#setInnerHandlers();
-    this.setEnterShiftKeysDownHandler(this._callback.enterShiftKeysDown);
+    this.setCtrlEnterKeysDownHandler(this._callback.ctrlEnterKeysDown);
   };
 
   reset = () => {
@@ -75,12 +76,13 @@ export default class PopupNewCommentView extends AbstractStatefulView {
     );
   };
 
-  #enterShiftKeysDownHandler = (evt) => {
+  #ctrlEnterKeysDownHandler = (evt) => {
 
-    if (evt.shiftKey && evt.key === 'Enter') {
+    if (evt.ctrlKey && evt.key === 'Enter') {
       evt.preventDefault();
-
-      this._callback.enterShiftKeysDown(PopupNewCommentView.parseStateToComment(this._state));
+      this._callback.ctrlEnterKeysDown(PopupNewCommentView.parseStateToComment(this._state));
+      this.reset();
+      document.removeEventListener('keydown', this.#ctrlEnterKeysDownHandler);
     }
   };
 
@@ -101,10 +103,6 @@ export default class PopupNewCommentView extends AbstractStatefulView {
   #setInnerHandlers = () => {
     this.element.querySelector('.film-details__comment-input')
       .addEventListener('input', this.#textInputHandler);
-
-    this.element.querySelector('.film-details__comment-input')
-      .addEventListener('keydown', this.#enterShiftKeysDownHandler);
-
 
     this.element.querySelector('.film-details__emoji-list')
       .addEventListener('change', this.#emotionChangeHandler);
