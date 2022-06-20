@@ -1,3 +1,10 @@
+const ProfileRating = {
+  START: '',
+  NOVICE: 'novice',
+  FUN: 'fun',
+  BUFF: 'movie buff'
+}
+
 const SortType = {
   DEFAULT: 'default',
   DATE: 'date',
@@ -19,17 +26,10 @@ const UserAction = {
 const UpdateType = {
   PATCH: 'PATCH',
   MINOR: 'MINOR',
-  MINOR_POPUP: 'MINOR_POPUP',
   MAJOR: 'MAJOR',
+  INIT: 'INIT',
 };
 
 const EMOTIONS = ['smile', 'sleeping', 'puke', 'angry'];
 
-const filter = {
-  [FilterType.ALL]: (films) => films,
-  [FilterType.FAVORITES]: (films) => films.filter((film) => film.userDetails.favorite),
-  [FilterType.WATCHLIST]: (films) => films.filter((film) => film.userDetails.watchlist),
-  [FilterType.HISTORY]: (films) => films.filter((film) => film.userDetails.alreadyWatched),
-};
-
-export {SortType, FilterType, EMOTIONS, UserAction, UpdateType, filter};
+export {ProfileRating, SortType, FilterType, EMOTIONS, UserAction, UpdateType};

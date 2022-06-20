@@ -15,20 +15,21 @@ const createCommentEmotionTemplate = (emotion) =>
     : ''}
   </div>`;
 
-const createEmotionsListTemplate = (currentEmotion) => EMOTIONS.map((emotion) =>
+const createEmotionsListTemplate = (currentEmotion, isDisabled) => EMOTIONS.map((emotion) =>
   `<input type="radio"
   id="emoji-${emotion}"
   class="film-details__emoji-item visually-hidden"
   name="comment-emoji"
   value="${emotion}"
-  ${currentEmotion === emotion ? 'checked' : ''}/>
+  ${currentEmotion === emotion ? 'checked' : ''}
+  ${isDisabled ? 'disabled' : ''}/>
   <label for="emoji-${emotion}"
   class="film-details__emoji-label"><img src="./images/emoji/${emotion}.png" width="30" height="30" alt="emoji"></label>`
 ).join('');
 
 const createPopupNewCommentTemplate = (data) => {
 
-  const {emotion, text} = data;
+  const {emotion, text, isDisabled} = data;
 
   const emotionCommentTemplate = createCommentEmotionTemplate(emotion);
   const emotionsListTemplate = createEmotionsListTemplate(emotion);
@@ -38,7 +39,7 @@ const createPopupNewCommentTemplate = (data) => {
       ${emotionCommentTemplate}
 
       <label class="film-details__comment-label">
-        <textarea class="film-details__comment-input" placeholder="Select reaction below and write comment here" name="comment">${he.encode(text)}</textarea>
+        <textarea class="film-details__comment-input" placeholder="Select reaction below and write comment here" name="comment" ${isDisabled ? 'disabled' : ''}>${he.encode(text)}</textarea>
       </label>
 
       <div class="film-details__emoji-list">
@@ -77,6 +78,9 @@ export default class PopupNewCommentView extends AbstractStatefulView {
   };
 
   #ctrlEnterKeysDownHandler = (evt) => {
+    if (this._state.text === '' || this._state.emotion === null) {
+      return
+    }
 
     if (evt.ctrlKey && evt.key === 'Enter') {
       evt.preventDefault();
@@ -109,13 +113,19 @@ export default class PopupNewCommentView extends AbstractStatefulView {
   };
 
   static parseCommentToState = (comment) => {
-    const state = {...comment};
+
+    const state = {...comment,
+      isDisabled: false,
+    };
 
     return state;
   };
 
   static parseStateToComment = (state) => {
+
     const comment = {...state};
+
+    delete comment.isDisabled
 
     return comment;
   };

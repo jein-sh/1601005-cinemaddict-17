@@ -19,10 +19,12 @@ export default class FilmPresenter {
     this.#filmsModel = filmsModel;
     this.#commentsModel = commentsModel;
     this.#changeData = changeData;
+
   }
 
   init = (film) => {
     this.#film = film;
+    console.log('init', film.id)
 
     const prevFilmComponent = this.#filmComponent;
 
@@ -49,14 +51,32 @@ export default class FilmPresenter {
     remove(this.#filmComponent);
   };
 
+  setSaving = () => {
+    this.#filmComponent.updateElement({
+      isDisabled: true,
+    });
+  };
+
+  setAborting = () => {
+    this.#filmComponent.updateElement({
+      isDisabled: false,
+    });
+
+    this.#filmComponent.shake(reset);
+  };
+
   #renderPopup = () => {
+    // this.#commentsModel.init(this.#film)
     this.#popupPresenter = new PopupPresenter(bodyElement, this.#commentsModel, this.#handleViewAction);
     this.#popupPresenter.init(this.#film);
+    console.log('renderPopup', this.#popupPresenter, this.#film.id)
   };
 
   #rerenderPopup = () => {
+    console.log('rerender', this.#popupPresenter)
     if(this.#popupPresenter) {
       this.#popupPresenter.init(this.#film);
+      console.log('rerender with popupPresenter')
     }
   };
 
@@ -77,14 +97,14 @@ export default class FilmPresenter {
       UpdateType.PATCH,
       {...this.#film, userDetails: {...this.#film.userDetails, watchlist: !this.#film.userDetails.watchlist}}
     );
-
+    console.log('handle', this.#popupPresenter, this.#film.userDetails.watchlist)
     this.#rerenderPopup();
   };
 
   #handleMarkAsWatchedClick = () => {
     this.#changeData(
       UserAction.UPDATE_FILM,
-      UpdateType.PATCH,
+      UpdateType.MINOR,
       {...this.#film, userDetails: {...this.#film.userDetails, alreadyWatched: !this.#film.userDetails.alreadyWatched}}
     );
 
@@ -94,7 +114,7 @@ export default class FilmPresenter {
   #handleFavoriteClick = () => {
     this.#changeData(
       UserAction.UPDATE_FILM,
-      UpdateType.PATCH,
+      UpdateType.MINOR,
       {...this.#film, userDetails: {...this.#film.userDetails, favorite: !this.#film.userDetails.favorite}}
     );
 

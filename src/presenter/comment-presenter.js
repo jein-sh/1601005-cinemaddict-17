@@ -38,6 +38,22 @@ export default class CommentPresenter {
     remove(this.#commentComponent);
   };
 
+  setDeleting = () => {
+    this.#commentComponent.updateElement({
+      isDisabled: true,
+      isDeleting: true,
+    });
+  };
+
+  setAborting = () => {
+    this.#commentComponent.updateElement({
+      isDisabled: false,
+      isDeleting: false,
+    });
+
+    this.#commentComponent.shake(reset);
+  };
+
   #handleDeleteClick = (comment) => {
     this.#changeData(
       UserAction.DELETE_COMMENT,

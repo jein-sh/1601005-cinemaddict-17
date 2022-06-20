@@ -5,9 +5,10 @@ import FilmListView from '../view/film-list-view.js';
 import EmptyFilmListView from '../view/empty-film-list-view.js';
 import FilmListContainerView from '../view/film-list-container-view.js';
 import ShowMoreButtonView from '../view/show-more-button-view.js';
+import LoadingView from '../view/loading-view.js';
 import FilmPresenter from './film-presenter.js';
-import {sortFilmDate, sortFilmRating} from '../untils.js';
-import {SortType,  UpdateType, UserAction, FilterType, filter} from '../const.js';
+import {sortFilmDate, sortFilmRating, filter} from '../untils.js';
+import {SortType,  UpdateType, UserAction, FilterType} from '../const.js';
 
 const FILM_COUNT_PER_STEP = 5;
 
@@ -25,7 +26,9 @@ export default class FilmsPresenter {
   #currentSortType = SortType.DEFAULT;
   #renderedFilmCount = FILM_COUNT_PER_STEP;
   #filterType = FilterType.ALL;
+  #isLoading = true;
 
+  #loadingComponent = new LoadingView();
   #filmsWrapperComponent = new FilmsWrapperView();
   #filmListComponent = new FilmListView();
   #filmListContainerComponent = new FilmListContainerView();
@@ -63,6 +66,10 @@ export default class FilmsPresenter {
   #renderEmptyFilmList = () => {
     this.#emptyFilmListComponent = new EmptyFilmListView(this.#filterType);
     render(this.#emptyFilmListComponent, this.#container);
+  };
+
+  #renderLoading = () => {
+    render(this.#loadingComponent, this.#container);
   };
 
   #handleSortTypeChange = (sortType) => {
@@ -110,6 +117,12 @@ export default class FilmsPresenter {
   };
 
   #renderFilmsContent = () => {
+
+    if (this.#isLoading) {
+      this.#renderLoading();
+      return;
+    }
+
     const films = this.films;
     const filmCount = films.length;
 
@@ -137,6 +150,7 @@ export default class FilmsPresenter {
 
     remove(this.#sortComponent);
     remove(this.#showMoreButtonComponent);
+    remove(this.#loadingComponent);
 
     if (this.#emptyFilmListComponent) {
       remove(this.#emptyFilmListComponent);
@@ -170,6 +184,12 @@ export default class FilmsPresenter {
         break;
       case UpdateType.MAJOR:
         this.#clearFilmsContent({resetRenderedFilmCount: true, resetSortType: true});
+        this.#renderFilmsContent();
+        break;
+      case UpdateType.INIT:
+        this.#isLoading = false;
+        remove(this.#loadingComponent);
+        this.#clearFilmsContent();
         this.#renderFilmsContent();
         break;
     }

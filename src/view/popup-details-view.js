@@ -1,4 +1,4 @@
-import AbstractView from '../framework/view/abstract-view.js';
+import AbstractStatefulView from '../framework/view/abstract-stateful-view.js';
 import { humanizeDate, timeInHours } from '../untils.js';
 
 const createPopupDetailsTemplate = (film) => {
@@ -26,6 +26,7 @@ const createPopupDetailsTemplate = (film) => {
       alreadyWatched,
       favorite
     },
+    isDisabled
   } = film;
 
   const age = `${ageRating}+`;
@@ -98,7 +99,7 @@ const createPopupDetailsTemplate = (film) => {
               <td class="film-details__cell">${releaseCountry}</td>
             </tr>
             <tr class="film-details__row">
-              <td class="film-details__term">Genres</td>
+              <td class="film-details__term">${genres.length === 1 ? `Genre` : `Genres`}</td>
               <td class="film-details__cell">${genresTemplate()}</td>
             </tr>
           </table>
@@ -108,25 +109,31 @@ const createPopupDetailsTemplate = (film) => {
       </div>
 
       <section class="film-details__controls">
-        <button type="button" class="film-details__control-button film-details__control-button--watchlist ${activeClassName(watchlist)}" id="watchlist" name="watchlist">Add to watchlist</button>
-        <button type="button" class="film-details__control-button film-details__control-button--watched ${activeClassName(alreadyWatched)}" id="watched" name="watched">Already watched</button>
-        <button type="button" class="film-details__control-button film-details__control-button--favorite ${activeClassName(favorite)}" id="favorite" name="favorite">Add to favorites</button>
+        <button type="button" class="film-details__control-button film-details__control-button--watchlist ${activeClassName(watchlist)}" ${isDisabled ? 'disabled' : ''} id="watchlist" name="watchlist">Add to watchlist</button>
+        <button type="button" class="film-details__control-button film-details__control-button--watched ${activeClassName(alreadyWatched)}" ${isDisabled ? 'disabled' : ''} id="watched" name="watched">Already watched</button>
+        <button type="button" class="film-details__control-button film-details__control-button--favorite ${activeClassName(favorite)}" ${isDisabled ? 'disabled' : ''} id="favorite" name="favorite">Add to favorites</button>
       </section>
     </div>`
   );
 };
 
-export default class PopupDetailsdView extends AbstractView {
-  #film = null;
+export default class PopupDetailsdView extends AbstractStatefulView {
 
   constructor(film) {
     super();
-    this.#film = film;
+    this._state = PopupDetailsdView.parsePopupToState(film);
   }
 
   get template() {
-    return createPopupDetailsTemplate(this.#film);
+    return createPopupDetailsTemplate(this._state);
   }
+
+  _restoreHandlers = () => {
+    this.setMarkAsWatchedClickHandler(this._callback.markAsWatchedClick);
+    this.setAddToWatchlistClickHandler(this._callback.addToWatchlistClick);
+    this.setFavoriteClickHandler(this._callback.favoriteClick);
+    this.setCloseButtonClickHandler(this._callback.closeButtonClick);
+  };
 
   setCloseButtonClickHandler = (callback) => {
     this._callback.closeButtonClick = callback;
@@ -166,6 +173,22 @@ export default class PopupDetailsdView extends AbstractView {
   #favoriteClickHandler = (evt) => {
     evt.preventDefault();
     this._callback.favoriteClick();
+  };
+
+  static parsePopupToState = (film) => {
+    const state = {...film,
+      isDisabled: false,
+    };
+
+    return state;
+  };
+
+  static parseStateToPopup = (state) => {
+    const film = {...state};
+
+    delete film.isDisabled;
+
+    return comment;
   };
 
 }

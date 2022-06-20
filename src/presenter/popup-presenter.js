@@ -33,7 +33,7 @@ export default class PopupPresenter {
     this.#film = film;
 
     const prevPopupDetailsComponent = this.#popupDetailsComponent;
-    this.#commentsPresenter = new CommentsPresenter(this.#popupFormComponent.element, this.#commentsModel);
+    this.#commentsPresenter = new CommentsPresenter(this.#popupFormComponent.element, this.#commentsModel, this.#film);
 
     this.#popupDetailsComponent = new PopupDetailsView(this.#film);
 
@@ -71,7 +71,6 @@ export default class PopupPresenter {
 
   #renderPopupDetails = () => {
     render(this.#popupDetailsComponent, this.#popupFormComponent.element);
-    this.#commentsPresenter.init();
   };
 
   #closePopup = () => {
@@ -80,6 +79,20 @@ export default class PopupPresenter {
       popup.remove();
       bodyElement.classList.remove('hide-overflow');
     }
+  };
+
+  setSaving = () => {
+    this.#popupDetailsComponent.updateElement({
+      isDisabled: true,
+    });
+  };
+
+  setAborting = () => {
+    this.#popupDetailsComponent.updateElement({
+      isDisabled: false,
+    });
+
+    this.#popupDetailsComponent.shake(reset);
   };
 
   #handleCloseButtonClick = () => {
@@ -97,15 +110,17 @@ export default class PopupPresenter {
   #handleAddToWatchlistClick = () => {
     this.#changeData(
       UserAction.UPDATE_FILM,
-      UpdateType.PATCH,
+      UpdateType.MAJOR,
       {...this.#film, userDetails: {...this.#film.userDetails, watchlist: !this.#film.userDetails.watchlist}}
     );
+
+    this.init(this.#film)
   };
 
   #handleMarkAsWatchedClick = () => {
     this.#changeData(
       UserAction.UPDATE_FILM,
-      UpdateType.PATCH,
+      UpdateType.MAJOR,
       {...this.#film, userDetails: {...this.#film.userDetails, alreadyWatched: !this.#film.userDetails.alreadyWatched}}
     );
   };
@@ -113,7 +128,7 @@ export default class PopupPresenter {
   #handleFavoriteClick = () => {
     this.#changeData(
       UserAction.UPDATE_FILM,
-      UpdateType.PATCH,
+      UpdateType.MAJOR,
       {...this.#film, userDetails: {...this.#film.userDetails, favorite: !this.#film.userDetails.favorite}}
     );
   };

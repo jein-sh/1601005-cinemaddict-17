@@ -1,8 +1,6 @@
 import {remove, render} from '../framework/render.js';
 import PopupNewCommentView from '../view/popup-new-comment-view.js';
 import {UserAction} from '../const.js';
-import {nanoid} from 'nanoid';
-
 
 export default class NewCommentPresenter {
   #container = null;
@@ -24,10 +22,24 @@ export default class NewCommentPresenter {
     remove(this.#newCommentComponent);
   };
 
+  setSaving = () => {
+    this.#newCommentComponent.updateElement({
+      isDisabled: true,
+    });
+  };
+
+  setAborting = () => {
+    this.#newCommentComponent.updateElement({
+      isDisabled: false,
+    });
+
+    this.#newCommentComponent.shake(reset);
+  };
+
   #handleCtrlEnterClick = (comment) => {
     this.#changeData(
       UserAction.ADD_COMMENT,
-      {id: nanoid(), ...comment},
+      comment,
     );
   };
 }
