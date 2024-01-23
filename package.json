@@ -13,7 +13,9 @@
   "scripts": {
     "lint": "eslint src/",
     "build": "webpack --mode production",
-    "start": "webpack serve --mode development --open"
+    "start": "webpack serve --mode development --open",
+    "predeploy": "npm run build",
+    "deploy": "gh-pages -d build"
   },
   "devDependencies": {
     "css-loader": "6.7.1",
@@ -30,6 +32,7 @@
     "babel-loader": "8.2.4",
     "copy-webpack-plugin": "10.2.4",
     "dayjs": "^1.11.1",
+    "gh-pages": "^5.0.0",
     "he": "^1.2.0",
     "nanoid": "^3.3.4",
     "webpack": "5.72.0",
